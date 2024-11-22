@@ -1,4 +1,3 @@
-/** @format */
 
 const { Sequelize } = require('sequelize');
 
@@ -10,7 +9,10 @@ const sequelize = new Sequelize(
 	{
 		host: process.env.DB_HOST,
 		dialect: 'mysql',
-		port: process.env.DB_PORT,
+        dialectOptions: {
+            connectTimeout: 60000, // 60 seconds timeout
+          },
+		port: process.env.DB_PORT || 3306,
 		logging: false, // Disable logging; set to console.log to view SQL queries
 	}
 );
