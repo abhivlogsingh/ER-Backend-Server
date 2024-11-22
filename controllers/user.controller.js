@@ -16,19 +16,34 @@ const createUser = async (req, res) => {
 			role,
 		} = req.body;
 
+		// Encrypt the password before storing it
+		const hashedPassword = await bcrypt.hash(password, 10);
+
 		// Create the user in the database
 		const user = await User.create({
 			companyName,
 			contactPerson,
-			email,
+			emailId: email, // Assuming the column is emailId in the User model
 			mobileNo,
-			password,
-			role,
+			password: hashedPassword, // Store the hashed password
+			role: role || '2', // Default role to '2' (User) if not provided
 			logoUrl,
-			dashboardUrls: dashboardUrls || [],
+			dashboardUrls: dashboardUrls || [], // Default to an empty array if not provided
 		});
 
-		res.status(201).json(user); // Respond with the created user
+		res.status(201).json({
+			message: 'User created successfully',
+			user: {
+				id: user.id,
+				companyName: user.companyName,
+				contactPerson: user.contactPerson,
+				emailId: user.emailId,
+				mobileNo: user.mobileNo,
+				role: user.role,
+				logoUrl: user.logoUrl,
+				dashboardUrls: user.dashboardUrls,
+			},
+		});
 	} catch (err) {
 		console.error('Error creating user:', err);
 		res.status(500).json({ error: 'Server error' });
