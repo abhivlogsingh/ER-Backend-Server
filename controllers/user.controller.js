@@ -12,7 +12,9 @@ const createUser = async (req, res) => {
 			mobileNo,
 			password,
 			logoUrl,
-			dashboardUrls,
+			dashboardUrl1,
+			dashboardUrl2,
+			dashboardUrl3,
 			role,
 		} = req.body;
 
@@ -28,7 +30,9 @@ const createUser = async (req, res) => {
 			password: hashedPassword, // Store the hashed password
 			role: role || '2', // Default role to '2' (User) if not provided
 			logoUrl,
-			dashboardUrls: dashboardUrls || [], // Default to an empty array if not provided
+			dashboardUrl1: dashboardUrl1, // Default to an empty array if not provided
+			dashboardUrl2: dashboardUrl2, // Default to an empty array if not provided
+			dashboardUrl3: dashboardUrl3, // Default to an empty array if not provided
 		});
 
 		res.status(201).json({
@@ -41,7 +45,9 @@ const createUser = async (req, res) => {
 				mobileNo: user.mobileNo,
 				role: user.role,
 				logoUrl: user.logoUrl,
-				dashboardUrls: user.dashboardUrls,
+				dashboardUrl1: user.dashboardUrl1,
+				dashboardUrl2: user.dashboardUrl2,
+				dashboardUrl3: user.dashboardUrl3,
 			},
 		});
 	} catch (err) {
@@ -89,7 +95,9 @@ const updateUser = async (req, res) => {
 			mobileNo,
 			password,
 			logoUrl,
-			dashboardUrls,
+			dashboardUrl1,
+			dashboardUrl2,
+			dashboardUrl3,
 		} = req.body;
 
 		const user = await User.findByPk(id);
@@ -105,7 +113,9 @@ const updateUser = async (req, res) => {
 			mobileNo,
 			password,
 			logoUrl,
-			dashboardUrls,
+			dashboardUrl1,
+			dashboardUrl2,
+			dashboardUrl3,
 		});
 
 		res.status(200).json({ message: 'User updated successfully' });

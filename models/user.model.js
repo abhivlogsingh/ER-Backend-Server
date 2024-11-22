@@ -43,7 +43,15 @@ const User = sequelize.define(
 			type: DataTypes.STRING,
 			allowNull: true, // Optional: Allow null values for the logoUrl column
 		},
-		dashboardUrl: {
+		dashboardUrl1: {
+			type: DataTypes.STRING,
+			allowNull: true, // Optional: Allow null values for the dashboardUrl column
+		},
+		dashboardUrl2: {
+			type: DataTypes.STRING,
+			allowNull: true, // Optional: Allow null values for the dashboardUrl column
+		},
+		dashboardUrl3: {
 			type: DataTypes.STRING,
 			allowNull: true, // Optional: Allow null values for the dashboardUrl column
 		},
