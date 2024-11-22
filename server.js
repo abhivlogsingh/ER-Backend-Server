@@ -15,6 +15,15 @@ const app = express();
 app.use(cors()); // Enable CORS for cross-origin requests
 app.use(express.json()); // Parse incoming JSON requests
 
+app.use(
+    cors({
+      origin: '*', // Replace with frontend domain
+      methods: 'GET,POST,PUT,DELETE', // Allowed HTTP methods
+      credentials: true, // If you need cookies
+    })
+  );
+  
+
 // Routes
 app.use('/api/users', userRoutes); // User-related routes
 app.use('/api/requests', requestRoutes); // Request-related routes
