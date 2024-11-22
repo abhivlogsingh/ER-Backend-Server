@@ -1,27 +1,39 @@
+/** @format */
+
 const jwt = require('jsonwebtoken');
 
 exports.authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization'];
+	// Get the token from the Authorization header
+	const authHeader = req.headers['authorization'];
 
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
+	if (!authHeader) {
+		return res.status(401).json({ error: 'No token provided' });
+	}
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: 'Invalid token' });
-    }
+	const token = authHeader.split(' ')[1]; // Extract the token part
 
-    req.user = user; // Attach user info to the request
-    next();
-  });
+	jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+		if (err) {
+			return res.status(403).json({ error: 'Invalid or expired token' });
+		}
+
+		// Attach the decoded user data (from token payload) to the request object
+		req.user = decoded;
+		next();
+	});
 };
 
-exports.authorizeRole = (roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ error: 'Access denied' });
-    }
-    next();
-  };
+// Role Authorization Middleware
+exports.authorizeRole = (allowedRoles) => {
+	return (req, res, next) => {
+		const userRole = req.user.role; // Extract role from decoded JWT
+
+		if (!allowedRoles.includes(userRole)) {
+			return res
+				.status(403)
+				.json({ error: 'Access denied. Unauthorized role.' });
+		}
+
+		next();
+	};
 };
