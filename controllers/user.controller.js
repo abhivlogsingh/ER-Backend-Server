@@ -1,6 +1,7 @@
 /** @format */
 
 const User = require('../models/user.model');
+const bcrypt = require('bcrypt');
 
 // Create a new user
 const createUser = async (req, res) => {
