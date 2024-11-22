@@ -29,10 +29,10 @@ const createUser = async (req, res) => {
 			mobileNo,
 			password: hashedPassword, // Store the hashed password
 			role: role || '2', // Default role to '2' (User) if not provided
-			logoUrl,
-			dashboardUrl1: dashboardUrl1, // Default to an empty array if not provided
-			dashboardUrl2: dashboardUrl2, // Default to an empty array if not provided
-			dashboardUrl3: dashboardUrl3, // Default to an empty array if not provided
+			logoUrl: logoUrl || '',
+			dashboardUrl1: dashboardUrl1 || '', // Default to an empty array if not provided
+			dashboardUrl2: dashboardUrl2 || '', // Default to an empty array if not provided
+			dashboardUrl3: dashboardUrl3 || '', // Default to an empty array if not provided
 		});
 
 		res.status(201).json({
