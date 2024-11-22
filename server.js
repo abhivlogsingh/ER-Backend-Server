@@ -8,7 +8,7 @@ require('dotenv').config();
 const sequelize = require('./models/index'); // Sequelize instance for database connection
 const userRoutes = require('./routes/user.routes'); // Import user routes
 const requestRoutes = require('./routes/request.routes'); // Import request routes
-const authRoutes = require('./routes/auth.routes'); // Import auth routes
+// const authRoutes = require('./routes/auth.routes'); // Import auth routes
 
 // Middleware
 app.use(cors()); // Enable CORS for cross-origin requests
@@ -17,7 +17,7 @@ app.use(express.json()); // Parse incoming JSON requests
 // Routes
 app.use('/api/users', userRoutes); // User-related routes
 app.use('/api/requests', requestRoutes); // Request-related routes
-app.use('/api/auth', authRoutes); // Authentication routes
+// app.use('/api/auth', authRoutes); // Authentication routes
 
 // Test the database connection
 sequelize
