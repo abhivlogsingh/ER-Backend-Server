@@ -1,32 +1,20 @@
 /** @format */
 
-require('dotenv').config();
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-
-// Import routes
-const requestRoutes = require('./routes/requestRoutes');
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+const cors = require('cors');
+require('dotenv').config();
+const requestRoutes = require('./routes/request.routes');
 
 // Middleware
-app.use(bodyParser.json()); // Parse incoming JSON
-app.use(cors()); // Enable CORS
+app.use(cors());
+app.use(express.json());
 
 // Routes
-app.use('/requests', requestRoutes); // Prefix for request routes
+app.use('/api/requests', requestRoutes);
 
-// Error Handling Middleware (for generic errors)
-app.use((err, req, res, next) => {
-	console.error(err.stack);
-	res
-		.status(500)
-		.json({ message: 'Something went wrong!', error: err.message });
+// Server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+	console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-// Start Server
-app.listen(PORT, () =>
-	console.log(`Server running on http://localhost:${PORT}`)
-);
