@@ -26,7 +26,7 @@ const createUser = async (req, res) => {
 		const user = await User.create({
 			companyName,
 			contactPerson,
-			emailId: email, // Assuming the column is emailId in the User model
+			email: email, // Assuming the column is emailId in the User model
 			mobileNo,
 			password: hashedPassword, // Store the hashed password
 			role: role || '2', // Default role to '2' (User) if not provided
@@ -42,7 +42,7 @@ const createUser = async (req, res) => {
 				id: user.id,
 				companyName: user.companyName,
 				contactPerson: user.contactPerson,
-				emailId: user.emailId,
+				email: user.email,
 				mobileNo: user.mobileNo,
 				role: user.role,
 				logoUrl: user.logoUrl,
