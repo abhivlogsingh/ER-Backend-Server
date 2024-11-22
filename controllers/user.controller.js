@@ -8,7 +8,7 @@ const createUser = async (req, res) => {
 		const {
 			companyName,
 			contactPerson,
-			emailId,
+			email,
 			mobileNo,
 			password,
 			logoUrl,
@@ -20,7 +20,7 @@ const createUser = async (req, res) => {
 		const user = await User.create({
 			companyName,
 			contactPerson,
-			emailId,
+			email,
 			mobileNo,
 			password,
 			role: '2' || role,
@@ -70,7 +70,7 @@ const updateUser = async (req, res) => {
 		const {
 			companyName,
 			contactPerson,
-			emailId,
+			email,
 			mobileNo,
 			password,
 			logoUrl,
@@ -86,7 +86,7 @@ const updateUser = async (req, res) => {
 		await user.update({
 			companyName,
 			contactPerson,
-			emailId,
+			email,
 			mobileNo,
 			password,
 			logoUrl,
@@ -119,11 +119,11 @@ const deleteUser = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-	const { emailId, oldPassword, newPassword } = req.body;
+	const { email, oldPassword, newPassword } = req.body;
 
 	try {
 		// Find the user by email ID
-		const user = await User.findOne({ where: { emailId } });
+		const user = await User.findOne({ where: { email } });
 
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' });

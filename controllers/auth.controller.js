@@ -6,11 +6,11 @@ const { generateToken } = require('../utils/jwt');
 
 // User Sign-In
 exports.signIn = async (req, res) => {
-	const { emailId, password } = req.body;
+	const { email, password } = req.body;
 
 	try {
 		const user = await User.findOne({
-			where: { emailId },
+			where: { email },
 		});
 
 		if (!user) {
@@ -26,7 +26,7 @@ exports.signIn = async (req, res) => {
 		// Generate JWT token and include role
 		const tokenPayload = {
 			id: user.id,
-			emailId: user.emailId,
+			email: user.email,
 			role: user.role, // Include role in the token payload
 		};
 
@@ -37,7 +37,7 @@ exports.signIn = async (req, res) => {
 			token,
 			user: {
 				id: user.id,
-				emailId: user.emailId,
+				email: user.email,
 				companyName: user.companyName,
 				role: user.role, // Include role in the response
 			},
@@ -49,10 +49,10 @@ exports.signIn = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-	const { emailId, password } = req.body;
+	const { email, password } = req.body;
 
 	try {
-		const user = await User.findOne({ where: { emailId } });
+		const user = await User.findOne({ where: { email } });
 
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' });
@@ -72,7 +72,7 @@ exports.login = async (req, res) => {
 			token,
 			user: {
 				id: user.id,
-				emailId: user.emailId,
+				email: user.email,
 				companyName: user.companyName,
 				role: user.role,
 			},
@@ -88,7 +88,7 @@ exports.me = async (req, res) => {
 		const userId = req.user.id; // Extracted from JWT middleware
 		const user = await User.findOne({
 			where: { id: userId },
-			attributes: ['id', 'emailId', 'companyName', 'role'], // Return specific fields
+			attributes: ['id', 'email', 'companyName', 'role'], // Return specific fields
 		});
 
 		if (!user) {
