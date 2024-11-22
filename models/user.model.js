@@ -2,46 +2,43 @@
 
 const { DataTypes } = require('sequelize');
 const sequelize = require('./index'); // Sequelize instance
+const UserGroup = require('./userGroup.model'); // Import user_groups model
 
 const User = sequelize.define(
-	'User',
-	{
-		companyName: {
-			type: DataTypes.STRING,
-			allowNull: false,
-		},
-		contactPerson: {
-			type: DataTypes.STRING,
-			allowNull: false,
-		},
-		emailId: {
-			type: DataTypes.STRING,
-			allowNull: false,
-			validate: {
-				isEmail: true,
-			},
-		},
-		mobileNo: {
-			type: DataTypes.STRING,
-			allowNull: false,
-		},
-		password: {
-			type: DataTypes.STRING,
-			allowNull: false,
-		},
-		passwordResetToken: {
-			type: DataTypes.STRING,
-			allowNull: true, // Token for password reset
-		},
-		passwordResetExpires: {
-			type: DataTypes.DATE,
-			allowNull: true, // Expiration time for the reset token
-		},
-	},
-	{
-		tableName: 'users',
-		timestamps: true,
-	}
+  'User',
+  {
+    companyName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    contactPerson: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    emailId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
+    },
+    mobileNo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    tableName: 'users',
+    timestamps: true,
+  }
 );
+
+// Relationship: A User belongs to one user_group
+User.belongsTo(UserGroup, { foreignKey: 'groupId', as: 'role' });
 
 module.exports = User;

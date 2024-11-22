@@ -1,14 +1,13 @@
-/** @format */
-
 const express = require('express');
-const app = express();
 const cors = require('cors');
 require('dotenv').config();
 
 const sequelize = require('./models/index'); // Sequelize instance for database connection
-const userRoutes = require('./routes/user.routes'); // Import user routes
-const requestRoutes = require('./routes/request.routes'); // Import request routes
-// const authRoutes = require('./routes/auth.routes'); // Import auth routes
+const userRoutes = require('./routes/user.routes'); // User-related routes
+const requestRoutes = require('./routes/request.routes'); // Request-related routes
+const authRoutes = require('./routes/auth.routes'); // Authentication routes
+
+const app = express();
 
 // Middleware
 app.use(cors()); // Enable CORS for cross-origin requests
@@ -27,7 +26,7 @@ sequelize
 
 // Sync Sequelize models with the database
 sequelize
-	.sync({ alter: true }) // Synchronize models
+	.sync({ alter: true }) // Synchronize models with the database
 	.then(() => console.log('Database models synced successfully!'))
 	.catch((err) => console.error('Failed to sync database models:', err));
 
