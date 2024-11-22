@@ -1,3 +1,5 @@
+/** @format */
+
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -16,7 +18,7 @@ app.use(express.json()); // Parse incoming JSON requests
 // Routes
 app.use('/api/users', userRoutes); // User-related routes
 app.use('/api/requests', requestRoutes); // Request-related routes
-// app.use('/api/auth', authRoutes); // Authentication routes
+app.use('/api/auth', authRoutes); // Authentication routes
 
 // Test the database connection
 sequelize
