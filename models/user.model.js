@@ -33,6 +33,7 @@ const User = sequelize.define(
 		role: {
 			type: DataTypes.ENUM('1', '2'), // Enum definition
 			allowNull: false,
+			defaultValue: '2',
 			validate: {
 				isIn: [['1', '2']], // Ensure the value is within the allowed enum
 			},

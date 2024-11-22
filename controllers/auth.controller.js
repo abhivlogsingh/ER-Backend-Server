@@ -50,7 +50,7 @@ exports.signIn = async (req, res) => {
 
 exports.login = async (req, res) => {
 	const { email, password } = req.body;
-
+	console.log(email, password);
 	try {
 		const user = await User.findOne({ where: { email } });
 

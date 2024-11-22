@@ -23,7 +23,7 @@ const createUser = async (req, res) => {
 			email,
 			mobileNo,
 			password,
-			role: '2' || role,
+			role,
 			logoUrl,
 			dashboardUrls: dashboardUrls || [],
 		});
