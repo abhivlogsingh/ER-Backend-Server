@@ -1,3 +1,5 @@
+/** @format */
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -19,17 +21,18 @@ app.use('/api/auth', authRoutes); // Authentication routes
 
 // Test the database connection
 sequelize
-  .authenticate()
-  .then(() => console.log('Connected to the MySQL database successfully!'))
-  .catch((err) => console.error('Failed to connect to the database:', err));
+	.authenticate()
+	.then(() => console.log('Connected to the MySQL database successfully!'))
+	.catch((err) => console.error('Failed to connect to the database:', err));
 
 // Sync Sequelize models with the database
-sequelize.sync({ alter: true }) // Synchronize models
-  .then(() => console.log('Database models synced successfully!'))
-  .catch((err) => console.error('Failed to sync database models:', err));
+sequelize
+	.sync({ alter: true }) // Synchronize models
+	.then(() => console.log('Database models synced successfully!'))
+	.catch((err) => console.error('Failed to sync database models:', err));
 
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+	console.log(`Server is running on http://localhost:${PORT}`);
 });
