@@ -84,6 +84,9 @@ exports.login = async (req, res) => {
 				email: user.email,
 				companyName: user.companyName,
 				role: user.role,
+				contactPerson: user.contactPerson,
+				image: user.image,
+				mobileNo: user.mobileNo,
 			},
 		});
 	} catch (err) {
@@ -104,6 +107,7 @@ exports.me = async (req, res) => {
 				'role',
 				'contactPerson',
 				'image',
+				'mobileNo',
 			], // Return specific fields
 		});
 
