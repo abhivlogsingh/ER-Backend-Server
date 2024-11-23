@@ -55,6 +55,10 @@ const User = sequelize.define(
 			type: DataTypes.STRING,
 			allowNull: true, // Optional: Allow null values for the dashboardUrl column
 		},
+		image: {
+			type: DataTypes.STRING,
+			allowNull: true, // Optional: Allow null values for the image column
+		},
 	},
 	{
 		tableName: 'users',

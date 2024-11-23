@@ -97,7 +97,14 @@ exports.me = async (req, res) => {
 		const userId = req.user.id; // Extracted from JWT middleware
 		const user = await User.findOne({
 			where: { id: userId },
-			attributes: ['id', 'email', 'companyName', 'role'], // Return specific fields
+			attributes: [
+				'id',
+				'email',
+				'companyName',
+				'role',
+				'contactPerson',
+				'image',
+			], // Return specific fields
 		});
 
 		if (!user) {
