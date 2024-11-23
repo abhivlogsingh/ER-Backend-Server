@@ -87,6 +87,10 @@ exports.login = async (req, res) => {
 				contactPerson: user.contactPerson,
 				image: user.image,
 				mobileNo: user.mobileNo,
+				logoUrl: user.logoUrl,
+				dashboardUrl1: user.dashboardUrl1,
+				dashboardUrl2: user.dashboardUrl2,
+				dashboardUrl3: user.dashboardUrl3,
 			},
 		});
 	} catch (err) {
@@ -108,6 +112,10 @@ exports.me = async (req, res) => {
 				'contactPerson',
 				'image',
 				'mobileNo',
+				'logoUrl',
+				'dashboardUrl1',
+				'dashboardUrl2',
+				'dashboardUrl3',
 			], // Return specific fields
 		});
 
