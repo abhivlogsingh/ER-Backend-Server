@@ -8,7 +8,7 @@ const User = sequelize.define(
 	{
 		companyName: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 		},
 		contactPerson: {
 			type: DataTypes.STRING,
@@ -24,7 +24,7 @@ const User = sequelize.define(
 		},
 		mobileNo: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 		},
 		password: {
 			type: DataTypes.STRING,

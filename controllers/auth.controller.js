@@ -36,6 +36,8 @@ exports.register = async (req, res) => {
 			dashboardUrl3: dashboardUrl3 || '', // Default to an empty array if not provided
 		});
 
+		const token = generateToken({ id: user.id, role: user.role });
+
 		res.status(201).json({
 			message: 'User created successfully',
 			user: {
@@ -50,6 +52,7 @@ exports.register = async (req, res) => {
 				dashboardUrl2: user.dashboardUrl2,
 				dashboardUrl3: user.dashboardUrl3,
 			},
+			token,
 		});
 	} catch (err) {
 		console.error('Error creating user:', err);
