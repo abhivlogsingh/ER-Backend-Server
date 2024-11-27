@@ -19,6 +19,7 @@ app.use(express.json()); // Parse incoming JSON requests
 app.use('/api/users', userRoutes); // User-related routes
 app.use('/api/requests', requestRoutes); // Request-related routes
 app.use('/api/auth', authRoutes); // Authentication routes
+app.use('/api/uploads', express.static('uploads'));
 
 // Test the database connection
 sequelize

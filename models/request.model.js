@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('./index'); // Import Sequelize instance
+const sequelize = require('./index'); // Sequelize instance
 
 const Request = sequelize.define(
   'Request',
@@ -12,26 +12,34 @@ const Request = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    duration: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    date: {
+    requestDate: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    mode: {
+    priority: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    select_name: {
+    requestorName: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    communicationMethod: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    completionStatus: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    attachment: {
+      type: DataTypes.STRING, // File path or name
+      allowNull: true, // Optional
     },
   },
   {
     tableName: 'requests',
-    timestamps: true,
+    timestamps: true, // Automatically adds `createdAt` and `updatedAt`
   }
 );
 
