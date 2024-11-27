@@ -1,10 +1,9 @@
 const Request = require("../models/request.model"); // Import the model
 
-// Create a new request
 const createRequest = async (req, res) => {
   try {
     const {
-      userId, // Extract userId from the payload
+      userId, // User ID from the payload
       description,
       type,
       requestDate,
@@ -14,14 +13,22 @@ const createRequest = async (req, res) => {
       completionStatus,
     } = req.body;
 
-    const attachment = req.file ? req.file.path : null; // Handle file path
+    // Validate required fields
+    if (!userId || !description || !type || !priority || !requestorName) {
+      return res.status(400).json({
+        error: 'Missing required fields. Please provide all necessary details.',
+      });
+    }
 
-    // Create a new request record
+    // Handle the file path for the attachment
+    const attachment = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Create a new request record in the database
     const request = await Request.create({
-      userId, // Include userId in the record
+      userId,
       description,
       type,
-      requestDate,
+      requestDate: requestDate || new Date(), // Default to current date if not provided
       priority,
       requestorName,
       communicationMethod,
@@ -29,12 +36,19 @@ const createRequest = async (req, res) => {
       attachment,
     });
 
-    res.status(201).json(request);
+    // Return a success response
+    res.status(201).json({
+      message: 'Request created successfully',
+      request,
+    });
   } catch (err) {
     console.error('Error creating request:', err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({
+      error: 'Failed to create request. Please try again later.',
+    });
   }
 };
+
 
 
 // Get all requests
