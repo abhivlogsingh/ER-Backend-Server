@@ -1,9 +1,13 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('./index'); // Sequelize instance
+const sequelize = require('./index');
 
 const Request = sequelize.define(
   'Request',
   {
+    userId: {
+      type: DataTypes.INTEGER, // Assuming userId is an integer
+      allowNull: false, // Make this false if it's mandatory
+    },
     description: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -33,13 +37,13 @@ const Request = sequelize.define(
       allowNull: false,
     },
     attachment: {
-      type: DataTypes.STRING, // File path or name
-      allowNull: true, // Optional
+      type: DataTypes.STRING, // File path
+      allowNull: true,
     },
   },
   {
     tableName: 'requests',
-    timestamps: true, // Automatically adds `createdAt` and `updatedAt`
+    timestamps: true,
   }
 );
 
