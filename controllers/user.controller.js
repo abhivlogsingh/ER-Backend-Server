@@ -2,71 +2,90 @@
 
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
+const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
+
+// Configure Multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../uploads")); // Set upload directory
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
+  },
+});
+
+// Multer instance for handling logo and image uploads
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Invalid file type. Only JPEG, PNG, and JPG are allowed."));
+    }
+  },
+}).fields([{ name: "logo", maxCount: 1 }, { name: "image", maxCount: 1 }]); // Define fields for logo and image uploads
 
 // Create a new user
 const createUser = async (req, res) => {
-  try {
-    const {
-      companyName,
-      contactPerson,
-      email,
-      mobileNo,
-      password,
-      logoUrl,
-      dashboardUrl1,
-      dashboardUrl2,
-      dashboardUrl3,
-      role,
-      organizationMission,
-      organizationSupport,
-    } = req.body;
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
 
-    // Handle file uploads
-    const logoPath = req.files?.logo ? req.files.logo[0].path : null; // logo file
-    const imagePath = req.files?.image ? req.files.image[0].path : null; // user profile image file
+    try {
+      const {
+        companyName,
+        contactPerson,
+        email,
+        mobileNo,
+        password,
+        dashboardUrl1,
+        dashboardUrl2,
+        dashboardUrl3,
+        role,
+        organizationMission,
+        organizationSupport,
+      } = req.body;
 
-    // Encrypt the password before storing it
-    const hashedPassword = await bcrypt.hash(password, 10);
+      // Extract file paths from Multer
+      const logoPath = req.files?.logo ? req.files.logo[0].path : null;
+      const imagePath = req.files?.image ? req.files.image[0].path : null;
 
-    // Create the user in the database
-    const user = await User.create({
-      companyName,
-      contactPerson,
-      email,
-      mobileNo,
-      password: hashedPassword, // Store the hashed password
-      role: role || "2", // Default role to '2' (User) if not provided
-      logoUrl: logoPath || logoUrl || "",
-      dashboardUrl1: dashboardUrl1 || "",
-      dashboardUrl2: dashboardUrl2 || "",
-      dashboardUrl3: dashboardUrl3 || "",
-      organizationMission: organizationMission || "",
-      organizationSupport: organizationSupport || "",
-      image: imagePath || "",
-    });
+      // Encrypt the password before storing it
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-    res.status(201).json({
-      message: "User created successfully",
-      user: {
-        id: user.id,
-        companyName: user.companyName,
-        contactPerson: user.contactPerson,
-        email: user.email,
-        mobileNo: user.mobileNo,
-        role: user.role,
-        logoUrl: user.logoUrl,
-        dashboardUrl1: user.dashboardUrl1,
-        dashboardUrl2: user.dashboardUrl2,
-        dashboardUrl3: user.dashboardUrl3,
-        organizationMission: user.organizationMission,
-        organizationSupport: user.organizationSupport,
-        image: user.image,
-      },
-    });
-  } catch (err) {
-    console.error("Error creating user:", err);
-    res.status(500).json({ error: "Server error" });
-  }
+      // Create the user in the database
+      const user = await User.create({
+        companyName,
+        contactPerson,
+        email,
+        mobileNo,
+        password: hashedPassword, // Store hashed password
+        role: role || "2", // Default role to '2' (User)
+        logoUrl: logoPath || "",
+        dashboardUrl1: dashboardUrl1 || "",
+        dashboardUrl2: dashboardUrl2 || "",
+        dashboardUrl3: dashboardUrl3 || "",
+        organizationMission: organizationMission || "",
+        organizationSupport: organizationSupport || "",
+        image: imagePath || "",
+      });
+
+      res.status(201).json({
+        message: "User created successfully",
+        user,
+      });
+    } catch (err) {
+      console.error("Error creating user:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
 };
 
 // Get all users
@@ -99,58 +118,74 @@ const getUserById = async (req, res) => {
 
 // Update a user
 const updateUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      companyName,
-      contactPerson,
-      email,
-      mobileNo,
-      password,
-      logoUrl,
-      dashboardUrl1,
-      dashboardUrl2,
-      dashboardUrl3,
-      organizationMission,
-      organizationSupport,
-    } = req.body;
-
-    // Handle file uploads
-    const logoPath = req.files?.logo ? req.files.logo[0].path : null;
-    const imagePath = req.files?.image ? req.files.image[0].path : null;
-
-    const user = await User.findByPk(id);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
     }
 
-    const updatedData = {
-      companyName,
-      contactPerson,
-      email,
-      mobileNo,
-      logoUrl: logoPath || logoUrl,
-      dashboardUrl1,
-      dashboardUrl2,
-      dashboardUrl3,
-      organizationMission,
-      organizationSupport,
-      image: imagePath || user.image, // Preserve existing image if no new file is uploaded
-    };
+    try {
+      const { id } = req.params;
+      const {
+        companyName,
+        contactPerson,
+        email,
+        mobileNo,
+        password,
+        dashboardUrl1,
+        dashboardUrl2,
+        dashboardUrl3,
+        organizationMission,
+        organizationSupport,
+      } = req.body;
 
-    // Update password only if provided
-    if (password) {
-      updatedData.password = await bcrypt.hash(password, 10);
+      // Extract file paths from Multer
+      const logoPath = req.files?.logo ? req.files.logo[0].path : null;
+      const imagePath = req.files?.image ? req.files.image[0].path : null;
+
+      const user = await User.findByPk(id);
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Remove old files if new ones are uploaded
+      if (logoPath && user.logoUrl) {
+        fs.unlink(path.join(__dirname, "../", user.logoUrl), (err) => {
+          if (err) console.error("Failed to delete old logo file:", err);
+        });
+      }
+      if (imagePath && user.image) {
+        fs.unlink(path.join(__dirname, "../", user.image), (err) => {
+          if (err) console.error("Failed to delete old image file:", err);
+        });
+      }
+
+      const updatedData = {
+        companyName,
+        contactPerson,
+        email,
+        mobileNo,
+        logoUrl: logoPath || user.logoUrl, // Preserve old if no new file
+        dashboardUrl1,
+        dashboardUrl2,
+        dashboardUrl3,
+        organizationMission,
+        organizationSupport,
+        image: imagePath || user.image, // Preserve old if no new file
+      };
+
+      if (password) {
+        updatedData.password = await bcrypt.hash(password, 10); // Encrypt new password
+      }
+
+      await user.update(updatedData);
+
+      res.status(200).json({ message: "User updated successfully" });
+    } catch (err) {
+      console.error("Error updating user:", err);
+      res.status(500).json({ error: "Server error" });
     }
-
-    await user.update(updatedData);
-
-    res.status(200).json({ message: "User updated successfully" });
-  } catch (err) {
-    console.error("Error updating user:", err);
-    res.status(500).json({ error: "Server error" });
-  }
+  });
 };
 
 // Delete a user
@@ -161,6 +196,18 @@ const deleteUser = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
+    }
+
+    // Remove associated files
+    if (user.logoUrl) {
+      fs.unlink(path.join(__dirname, "../", user.logoUrl), (err) => {
+        if (err) console.error("Failed to delete logo file:", err);
+      });
+    }
+    if (user.image) {
+      fs.unlink(path.join(__dirname, "../", user.image), (err) => {
+        if (err) console.error("Failed to delete image file:", err);
+      });
     }
 
     await user.destroy();
@@ -200,9 +247,9 @@ const resetPassword = async (req, res) => {
 
 module.exports = {
   createUser,
+  updateUser,
   getAllUsers,
   getUserById,
-  updateUser,
   deleteUser,
   resetPassword,
 };

@@ -24,11 +24,13 @@ router.get(
 	userController.getAllUsers
 );
 
+
+// User routes
 router.post(
 	'/',
 	authenticateToken,
-	authorizeRole(['Admin']), // Only Admin can create users
+	authorizeRole(['Admin']),
 	userController.createUser
-);
+  );
 
 module.exports = router;
