@@ -11,6 +11,7 @@ const sequelize = require('./models/index'); // Sequelize instance for database 
 const userRoutes = require('./routes/user.routes'); // User-related routes
 const requestRoutes = require('./routes/request.routes'); // Request-related routes
 const authRoutes = require('./routes/auth.routes'); // Authentication routes
+const formRoutes = require('./routes/form.routes'); // Import the routes
 
 const app = express();
 
@@ -22,6 +23,12 @@ app.use(helmet()); // Secure app with HTTP headers
 
 // Static File Serving
 app.use('/api/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded files
+
+// Static file serving for uploads
+app.use('/api/modelsuploads', express.static('modelsuploads'));
+
+// Routes
+app.use('/api/forms', formRoutes); // Use the form routes
 
 // Routes
 app.use('/api/users', userRoutes); // User-related routes
