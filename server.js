@@ -25,7 +25,8 @@ app.use(helmet()); // Secure app with HTTP headers
 app.use('/api/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded files
 
 // Static file serving for uploads
-app.use('/api/modelsuploads', express.static('modelsuploads'));
+app.use('/api/modelsuploads', express.static(path.join(__dirname, 'modelsuploads')));
+
 
 // Routes
 app.use('/api/forms', formRoutes); // Use the form routes
