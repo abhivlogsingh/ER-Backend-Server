@@ -24,6 +24,9 @@ app.use(helmet()); // Secure app with HTTP headers
 // Static File Serving
 app.use('/api/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded files
 
+// Static File Serving
+app.use('/api/profileuploads', express.static(path.join(__dirname, 'profileuploads'))); // Serve uploaded files
+
 // Static file serving for uploads
 app.use('/api/modelsuploads', express.static(path.join(__dirname, 'modelsuploads')));
 

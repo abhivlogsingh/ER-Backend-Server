@@ -1,79 +1,64 @@
 /** @format */
 
 const express = require('express');
+const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const router = express.Router();
 const userController = require('../controllers/user.controller');
-const {
-	authenticateToken,
-	authorizeRole,
-} = require('../middleware/auth.middleware');
+const { authenticateToken, authorizeRole } = require('../middleware/auth.middleware');
 
+// Multer storage configuration
 const storage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		const uploadPath = 'modelsuploads/';
-		cb(null, uploadPath); // Set the upload directory
-	},
-	filename: (req, file, cb) => {
-		const timestamp = Date.now(); // Use current timestamp for uniqueness
-		const ext = path.extname(file.originalname); // Get the file extension
-		cb(null, `image-${timestamp}${ext}`); // Generate a unique filename
-	},
+  destination: (req, file, cb) => {
+    const uploadPath = 'profileuploads/'; // Folder to store uploaded files
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const timestamp = Date.now();
+    const ext = path.extname(file.originalname);
+    cb(null, `${file.fieldname}-${timestamp}${ext}`);
+  },
 });
 
-// Multer upload configuration
+// Multer upload middleware with file validation and size limit
 const upload = multer({
-	storage,
-	limits: { fileSize: 5 * 1024 * 1024 }, // Set a file size limit (5MB)
-	fileFilter: (req, file, cb) => {
-		const allowedTypes = ['image/jpeg', 'image/png']; // Allowed file types
-		if (!allowedTypes.includes(file.mimetype)) {
-			return cb(new Error('Invalid file type. Only JPEG and PNG are allowed.'));
-		}
-		cb(null, true);
-	},
-});
-
-// Error handling middleware for multer
-const multerErrorHandler = (err, req, res, next) => {
-	if (err instanceof multer.MulterError) {
-		console.error('Multer Error:', err.message);
-		return res.status(400).json({ error: `Multer Error: ${err.message}` });
-	} else if (err) {
-		console.error('File Upload Error:', err.message);
-		return res.status(400).json({ error: err.message });
-	}
-	next();
-};
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      return cb(new Error('Invalid file type. Only JPEG and PNG are allowed.'));
+    }
+    cb(null, true);
+  },
+}).fields([
+  { name: 'logo', maxCount: 1 },  // File input for logo
+  { name: 'image', maxCount: 1 }, // File input for user image
+]);
 
 // Define CRUD routes for users
-router.post('/', userController.createUser);
+router.post('/', upload, userController.createUser); // User creation route with file upload
 router.get('/', userController.getAllUsers); // Get all users
-router.post('/resetPassword', userController.resetPassword); // Create a new user
+router.post('/resetPassword', userController.resetPassword); // Reset password
 router.get('/:id', userController.getUserById); // Get a user by ID
-router.put(
-	'/:id',
-	upload.single('image'),
-	multerErrorHandler,
-	userController.updateUser
-); // Update a user by ID
-router.delete('/:id', userController.deleteUser); // Delete a user by ID
+router.put('/:id', upload, userController.updateUser); // Update user with file upload
+router.delete('/:id', userController.deleteUser); // Delete user
 
-// Routes
+// Routes with authentication and role authorization
 router.get(
-	'/',
-	authenticateToken,
-	authorizeRole(['Admin']), // Only Admin can access
-	userController.getAllUsers
+  '/',
+  authenticateToken,
+  authorizeRole(['Admin']), // Only Admin can access
+  userController.getAllUsers
 );
 
-// User routes
+// User routes with authentication and authorization
 router.post(
-	'/',
-	authenticateToken,
-	authorizeRole(['Admin']),
-	userController.createUser
+  '/',
+  authenticateToken,
+  authorizeRole(['Admin']),
+  upload, // File upload middleware for user creation
+  userController.createUser
 );
 
 module.exports = router;
