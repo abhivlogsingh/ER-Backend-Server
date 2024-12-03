@@ -28,21 +28,25 @@ const createUser = async (req, res) => {
     // Encrypt the password before storing it
     const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
 
-    // Create the user in the database with file URLs for image and logo
+    // Check and assign the logo and image
+    const logoUrl = req.files.logo ? req.files.logo[0].path : ''; // File path for logo
+    const image = req.files.image ? req.files.image[0].path : ''; // File path for image
+
+    // Create the user in the database
     const user = await User.create({
       companyName,
       contactPerson,
       email,
       mobileNo,
       password: hashedPassword, // Store hashed password
-      role: role || "2", // Default role to '2' (User)
-      logoUrl: req.files.logo ? req.files.logo[0].path : "", // File path for logo
-      dashboardUrl1: dashboardUrl1 || "",
-      dashboardUrl2: dashboardUrl2 || "",
-      dashboardUrl3: dashboardUrl3 || "",
-      organizationMission: organizationMission || "",
-      organizationSupport: organizationSupport || "",
-      image: req.files.image ? req.files.image[0].path : "", // File path for image
+      role: role || '2', // Default role to '2' (User)
+      logoUrl: logoUrl, // Assign logo URL here
+      dashboardUrl1: dashboardUrl1 || '',
+      dashboardUrl2: dashboardUrl2 || '',
+      dashboardUrl3: dashboardUrl3 || '',
+      organizationMission: organizationMission || '',
+      organizationSupport: organizationSupport || '',
+      image: image, // Assign image here
     });
 
     res.status(201).json({
@@ -54,6 +58,7 @@ const createUser = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
 // Get all users
 const getAllUsers = async (req, res) => {

@@ -10,7 +10,7 @@ const { authenticateToken, authorizeRole } = require('../middleware/auth.middlew
 // Multer storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = 'profileuploads/'; // Folder to store uploaded files
+    const uploadPath = 'profileuploads'; // Folder to store uploaded files
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
