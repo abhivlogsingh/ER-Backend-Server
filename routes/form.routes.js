@@ -14,13 +14,14 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const timestamp = Date.now(); // Use current timestamp for uniqueness
     const ext = path.extname(file.originalname); // Get the file extension
-    cb(null, `image-${timestamp}${ext}`); // Generate a unique filename
+    const name = path.basename(file.originalname, ext); // Get file name without extension
+    cb(null, `${name}-${timestamp}${ext}`); // Generate a unique filename
   },
 });
 
 // Multer upload configuration
 const upload = multer({
-  storage,
+  storage: storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // Set a file size limit (5MB)
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/png']; // Allowed file types
