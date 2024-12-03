@@ -10,8 +10,8 @@ const multer = require("multer");
 const storage = multer.diskStorage({
   // Define the directory where the files will be uploaded
   destination: (req, file, cb) => {
-    // Change the directory to profilelogouploads
-    cb(null, path.join(__dirname, "../profilelogouploads")); // Set the upload directory to 'profilelogouploads'
+    const uploadDir = path.join("profilelogouploads"); // Relative path
+    cb(null, uploadDir); // Upload files to 'profilelogouploads' directory
   },
   filename: (req, file, cb) => {
     // Create a unique file name by appending a random number and current timestamp
@@ -30,7 +30,7 @@ const upload = multer({
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true); // Accept the file
     } else {
-      cb(new Error("Invalid file type. Only JPEG, PNG, and JPG are allowed.")); // Reject the file if it's not valid
+      cb(new Error("Invalid file type. Only JPEG, PNG, and JPG are allowed.")); // Reject the file if not valid
     }
   },
 }).fields([{ name: "logo", maxCount: 1 }, { name: "image", maxCount: 1 }]); // Define the fields for logo and image uploads
@@ -63,11 +63,11 @@ const createUser = async (req, res) => {
       }
 
       // Extract file paths from Multer
-      const logoPath = req.files?.logo ? req.files.logo[0].path : null;
-      const imagePath = req.files?.image ? req.files.image[0].path : null;
+      const logoPath = req.files?.logo ? `profilelogouploads/${req.files.logo[0].filename}` : null;
+      const imagePath = req.files?.image ? `profilelogouploads/${req.files.image[0].filename}` : null;
 
       // Encrypt the password before storing it
-      const hashedPassword = await bcrypt.hash(password, 10);  // Salt rounds = 10
+      const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
 
       // Create the user in the database
       const user = await User.create({
@@ -96,7 +96,6 @@ const createUser = async (req, res) => {
     }
   });
 };
-
 
 // Get all users
 const getAllUsers = async (req, res) => {
@@ -150,8 +149,8 @@ const updateUser = async (req, res) => {
       } = req.body;
 
       // Extract file paths from Multer
-      const logoPath = req.files?.logo ? req.files.logo[0].path : null; // Path of the uploaded logo
-      const imagePath = req.files?.image ? req.files.image[0].path : null; // Path of the uploaded image
+      const logoPath = req.files?.logo ? `profilelogouploads/${req.files.logo[0].filename}` : null;
+      const imagePath = req.files?.image ? `profilelogouploads/${req.files.image[0].filename}` : null;
 
       // Find the existing user
       const user = await User.findByPk(id);
