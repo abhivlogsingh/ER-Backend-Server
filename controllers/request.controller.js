@@ -11,10 +11,11 @@ const createRequest = async (req, res) => {
       requestorName,
       communicationMethod,
       completionStatus,
+      companyName, // Accept the new field here
     } = req.body;
 
     // Validate required fields
-    if (!userId || !description || !type || !priority || !requestorName) {
+    if (!userId || !description || !type || !priority || !requestorName || !companyName) {
       return res.status(400).json({
         error: 'Missing required fields. Please provide all necessary details.',
       });
@@ -34,6 +35,7 @@ const createRequest = async (req, res) => {
       communicationMethod,
       completionStatus,
       attachment,
+      companyName,  // Save the new field
     });
 
     // Return a success response
@@ -48,6 +50,7 @@ const createRequest = async (req, res) => {
     });
   }
 };
+
 
 
 
@@ -104,6 +107,7 @@ const updateRequest = async (req, res) => {
       requestorName,
       communicationMethod,
       completionStatus,
+      companyName, // Accept the new field here
     } = req.body;
 
     const attachment = req.file ? req.file.path : null;
@@ -122,6 +126,7 @@ const updateRequest = async (req, res) => {
       communicationMethod,
       completionStatus,
       attachment: attachment || request.attachment,
+      companyName: companyName || request.companyName, // Update the new field
     });
 
     res.status(200).json({ message: "Request updated successfully" });
@@ -130,6 +135,7 @@ const updateRequest = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
 // Delete a request by ID
 const deleteRequest = async (req, res) => {

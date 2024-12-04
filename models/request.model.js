@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('./index');
+const { DataTypes } = require("sequelize");
+const sequelize = require("./index");
 
 const Request = sequelize.define(
-  'Request',
+  "Request",
   {
     userId: {
       type: DataTypes.INTEGER, // Assuming userId is an integer
@@ -28,6 +28,10 @@ const Request = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    companyName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     communicationMethod: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -42,7 +46,7 @@ const Request = sequelize.define(
     },
   },
   {
-    tableName: 'requests',
+    tableName: "requests",
     timestamps: true,
   }
 );
