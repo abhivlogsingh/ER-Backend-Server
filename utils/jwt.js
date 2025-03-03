@@ -10,7 +10,7 @@ const generateToken = (user) => {
     },
     process.env.JWT_SECRET, // Secret key from .env
     {
-      expiresIn: '1h', // Token expires in 1 hour
+      expiresIn: '24h', // Token expires in 1 hour
     }
   );
 };
