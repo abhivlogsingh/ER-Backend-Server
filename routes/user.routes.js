@@ -12,15 +12,15 @@ const {
 
 // Multer storage configuration
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = 'profileuploads/'; // Folder to store uploaded files
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const timestamp = Date.now();
-    const ext = path.extname(file.originalname);
-    cb(null, `${file.fieldname}-${timestamp}${ext}`);
-  },
+	destination: (req, file, cb) => {
+		const uploadPath = 'profileuploads/'; // Folder to store uploaded files
+		cb(null, uploadPath);
+	},
+	filename: (req, file, cb) => {
+		const timestamp = Date.now();
+		const ext = path.extname(file.originalname);
+		cb(null, `${file.fieldname}-${timestamp}${ext}`);
+	},
 });
 
 // Multer upload middleware with file validation and size limit

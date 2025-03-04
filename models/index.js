@@ -1,3 +1,5 @@
+/** @format */
+
 const { Sequelize } = require('sequelize');
 
 // Initialize Sequelize with database connection
@@ -17,7 +19,10 @@ const sequelize = new Sequelize(
 			idle: 10000, // Time (ms) before a connection is released
 		},
 		dialectOptions: {
-			ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined, // Optional SSL setup
+			ssl:
+				process.env.DB_SSL === 'true'
+					? { rejectUnauthorized: false }
+					: undefined, // Optional SSL setup
 		},
 		define: {
 			timestamps: false, // Disable default timestamps (createdAt, updatedAt)
