@@ -12,6 +12,7 @@ const userRoutes = require('./routes/user.routes'); // User-related routes
 const requestRoutes = require('./routes/request.routes'); // Request-related routes
 const authRoutes = require('./routes/auth.routes'); // Authentication routes
 const formRoutes = require('./routes/form.routes'); // Import the routes
+const userNotificationRoutes = require('./routes/userNotification'); // Import the routes
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use('/api/forms', formRoutes); // Use the form routes
 app.use('/api/users', userRoutes); // User-related routes
 app.use('/api/requests', requestRoutes); // Request-related routes
 app.use('/api/auth', authRoutes); // Authentication routes
+app.use('/api/userNotifications', userNotificationRoutes); // Use the userNotification routes
 
 // Test the database connection
 sequelize

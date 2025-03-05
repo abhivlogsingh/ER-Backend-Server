@@ -2,8 +2,8 @@
 
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
+const Notification = require('../models/notification.model'); // Import Notification Model
 
-// Create a new user
 const createUser = async (req, res) => {
 	try {
 		const {
@@ -26,11 +26,11 @@ const createUser = async (req, res) => {
 		}
 
 		// Encrypt the password before storing it
-		const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
+		const hashedPassword = await bcrypt.hash(password, 10);
 
-		// Check and assign the logo and image
-		const logoUrl = req.files.logo ? req.files.logo[0].path : ''; // File path for logo
-		const image = req.files.image ? req.files.image[0].path : ''; // File path for image
+		// Check and assign the logo and image (if uploaded)
+		const logoUrl = req?.files?.logo ? req.files.logo[0].path : '';
+		const image = req?.files?.image ? req.files.image[0].path : '';
 
 		// Create the user in the database
 		const user = await User.create({
@@ -40,13 +40,19 @@ const createUser = async (req, res) => {
 			mobileNo,
 			password: hashedPassword, // Store hashed password
 			role: role || '2', // Default role to '2' (User)
-			logoUrl: logoUrl, // Assign logo URL here
+			logoUrl,
 			dashboardUrl1: dashboardUrl1 || '',
 			dashboardUrl2: dashboardUrl2 || '',
 			dashboardUrl3: dashboardUrl3 || '',
 			organizationMission: organizationMission || '',
 			organizationSupport: organizationSupport || '',
-			image: image, // Assign image here
+			image,
+		});
+
+		// 🔔 Create Notification for the created user
+		await Notification.create({
+			receiverId: user.id, // Notification sirf iss user ke liye hoga
+			message: `Welcome ${contactPerson}! Your account has been created.`,
 		});
 
 		res.status(201).json({
@@ -87,7 +93,6 @@ const getUserById = async (req, res) => {
 	}
 };
 
-// Update a user
 const updateUser = async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -106,7 +111,6 @@ const updateUser = async (req, res) => {
 
 		// Find the existing user
 		const user = await User.findByPk(id);
-
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' });
 		}
@@ -117,22 +121,28 @@ const updateUser = async (req, res) => {
 			contactPerson,
 			email,
 			mobileNo,
-			logoUrl: req?.files?.logo ? req?.files?.logo[0].path : user?.logoUrl, // If logo is uploaded, update it
-			dashboardUrl1,
-			dashboardUrl2,
-			dashboardUrl3,
-			organizationMission,
-			organizationSupport,
-			image: req?.files?.image ? req?.files?.image[0].path : user?.image, // If image is uploaded, update it
+			logoUrl: req?.files?.logo ? req.files.logo[0].path : user?.logoUrl, // If logo is uploaded, update it
+			dashboardUrl1: dashboardUrl1 || user.dashboardUrl1,
+			dashboardUrl2: dashboardUrl2 || user.dashboardUrl2,
+			dashboardUrl3: dashboardUrl3 || user.dashboardUrl3,
+			organizationMission: organizationMission || user.organizationMission,
+			organizationSupport: organizationSupport || user.organizationSupport,
+			image: req?.files?.image ? req.files.image[0].path : user?.image, // If image is uploaded, update it
 		};
 
 		// If password is provided, hash the new password and update it
 		if (password) {
-			updatedData.password = await bcrypt.hash(password, 10); // Encrypt new password
+			updatedData.password = await bcrypt.hash(password, 10);
 		}
 
 		// Update the user with the new data
 		await user.update(updatedData);
+
+		// 🔔 Create Notification for the updated user
+		await Notification.create({
+			receiverId: id, // Notification sirf iss user ke liye
+			message: `Hello ${contactPerson}, your profile has been updated.`,
+		});
 
 		res.status(200).json({ message: 'User updated successfully' });
 	} catch (err) {

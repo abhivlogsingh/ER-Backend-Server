@@ -10,6 +10,7 @@ const {
 	authorizeRole,
 } = require('../middleware/auth.middleware');
 
+
 // Multer storage configuration
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
@@ -46,6 +47,7 @@ router.post('/resetPassword', userController.resetPassword); // Reset password
 router.get('/:id', userController.getUserById); // Get a user by ID
 router.put('/:id', upload, userController.updateUser); // Update user with file upload
 router.delete('/:id', userController.deleteUser); // Delete user
+
 
 // Routes with authentication and role authorization
 router.get(
